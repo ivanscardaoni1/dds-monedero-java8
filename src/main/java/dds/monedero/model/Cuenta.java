@@ -11,13 +11,13 @@ import java.util.List;
 
 //CODE SMELLS
 //Duplicated Code: "saldo = 0" (duplicado en la declaracion y el constructor). CORREGIDO
-//Duplicated Code: getMovimientos().stream().filter(movimiento -> movimiento.isDeposito() (la idea de filtrar segun el tipo de movimiento se repite bastante)
+//Duplicated Code: getMovimientos().stream().filter(movimiento -> movimiento.isDeposito() (la idea de filtrar segun el tipo de movimiento se repite bastante) CORREGIDO
 //Large Class: class Cuenta (se podrian abstraer las responsabilidades del manejo de los movimientos a una clase "registroMovimientos") CORREGIDO
-//Type Test: "isDeposito" (estamos preguntandole el tipo al movimiento cuando podrian ser objetos polimorficos)
 //Divergent Change: modificar el saldo (1 atributo, 2 metodos) agregar movimientos (1 atributo 2 metodos) CORREGIDO
 //setSaldo y setMovimientos innecesario: poder setear el saldo puede traer conflictos ya que solo se deberia modificar por extracciones o depositos CORREGIDO
 //Duplicated Code: excepciones. CORREGIDO
 //Primitive obsession: se utilizan tipos de datos primitivos.
+//Type Test: "isDeposito" (estamos preguntandole el tipo al movimiento cuando podrian ser objetos polimorficos)
 
 
 
@@ -68,7 +68,7 @@ public class Cuenta {
 
   public void validarDeposito(double cuanto) {
     validarMontoNegativo(cuanto);
-    if (registroMovimientos.getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+    if (registroMovimientos.getDepositos().stream().count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
   }
