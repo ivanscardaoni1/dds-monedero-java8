@@ -28,4 +28,9 @@ public class RegistroMovimientos {
       .sum();
  }
 
+ public double limiteA(LocalDate fecha) {
+    return 1000 - getMontoExtraidoA(fecha);
+ }
+
+
 }
