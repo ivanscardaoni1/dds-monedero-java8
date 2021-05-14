@@ -3,7 +3,8 @@ package dds.monedero.model;
 import java.time.LocalDate;
 
 //CODE SMELLS
-// Misplaced method: "agregateA" (va en cuenta o en un objeto que lleve un registro de los movimientos, al que la cuenta conoce)
+// Misplaced method: "agregateA" (va en cuenta o en un objeto que lleve un registro de los movimientos, al que la cuenta conoce) CORREGIDO
+// Metodo innecesario "calcularValor" (esta acoplado a agregateA y si no existe el mismo, este tampoco) CORREGIDO
 // Long method: "agregateA" (agregar un movimiento y cambiarle el saldo a la cuenta no deberia estar en un metodo que se llama agregar, este metodo solo deberia agregar el movimiento)
 // Metodo innecesario: "fueDepositado" y "fueExtraido"
 // Type test: "isDeposito" y "isExtraccion" (estamos preguntando a un objeto por su tipo, claramente podrian ser clases polimorficas)
@@ -49,16 +50,4 @@ public class Movimiento {
     return !esDeposito;
   }
 
-  public void agregateA(Cuenta cuenta) {
-    cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.getRegistroMovimientos().agregarMovimiento(this);
-  }
-
-  public double calcularValor(Cuenta cuenta) {
-    if (esDeposito) {
-      return cuenta.getSaldo() + getMonto();
-    } else {
-      return cuenta.getSaldo() - getMonto();
-    }
-  }
 }
