@@ -82,6 +82,6 @@ public class MonederoTest {
   public void LosMovimientosSeRegistranCorrectamente() {
     cuenta.poner(90);
     cuenta.sacar(20);
-    assertEquals(2, cuenta.getMovimientos().size());
+    assertEquals(2, cuenta.getRegistroMovimientos().getMovimientos().size());
   }
 }

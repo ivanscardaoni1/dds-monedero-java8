@@ -12,17 +12,19 @@ import java.util.List;
 //CODE SMELLS
 //Duplicated Code: "saldo = 0" (duplicado en la declaracion y el constructor). CORREGIDO
 //Duplicated Code: getMovimientos().stream().filter(movimiento -> movimiento.isDeposito() (la idea de filtrar segun el tipo de movimiento se repite bastante)
-//Large Class: class Cuenta (se podrian abstraer las responsabilidades del manejo de los movimientos a una clase "registroMovimientos")
+//Large Class: class Cuenta (se podrian abstraer las responsabilidades del manejo de los movimientos a una clase "registroMovimientos") CORREGIDO
 //Type Test: "isDeposito" (estamos preguntandole el tipo al movimiento cuando podrian ser objetos polimorficos)
 //Divergent Change: modificar el saldo (1 atributo, 2 metodos) agregar movimientos (1 atributo 2 metodos)
-//setSaldo innecesario: poder setear el saldo puede traer conflictos ya que solo se deberia modificar por extracciones o depositos
+//setSaldo y setMovimientos innecesario: poder setear el saldo puede traer conflictos ya que solo se deberia modificar por extracciones o depositos
 //Duplicated Code: excepciones.
+//Primitive obsession: se utilizan tipos de datos primitivos.
+
 
 
 public class Cuenta {
 
   private double saldo = 0;
-  private List<Movimiento> movimientos = new ArrayList<>();
+  private RegistroMovimientos registroMovimientos = new RegistroMovimientos();
 
   public Cuenta() {}
 
@@ -31,7 +33,7 @@ public class Cuenta {
   }
 
   public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
+    this.registroMovimientos.setMovimientos(movimientos);
   }
 
   public void poner(double cuanto) {
@@ -39,7 +41,7 @@ public class Cuenta {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
 
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+    if (registroMovimientos.getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
@@ -54,7 +56,7 @@ public class Cuenta {
       throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
     }
 
-    double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
+    double montoExtraidoHoy = registroMovimientos.getMontoExtraidoA(LocalDate.now());
     double limite = 1000 - montoExtraidoHoy;
     if (cuanto > limite) {
       throw new MaximoExtraccionDiarioException("No puede extraer mas de $ " + 1000
@@ -63,21 +65,8 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
-
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
-    Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
-    movimientos.add(movimiento);
-  }
-
-  public double getMontoExtraidoA(LocalDate fecha) {
-    return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
-        .mapToDouble(Movimiento::getMonto)
-        .sum();
-  }
-
-  public List<Movimiento> getMovimientos() {
-    return movimientos;
+  public RegistroMovimientos getRegistroMovimientos(){
+    return registroMovimientos;
   }
 
   public double getSaldo() {
