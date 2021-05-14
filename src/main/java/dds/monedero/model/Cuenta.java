@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //CODE SMELLS
-//Duplicated Code: "saldo = 0" (duplicado en la declaracion y el constructor)
+//Duplicated Code: "saldo = 0" (duplicado en la declaracion y el constructor). CORREGIDO
 //Duplicated Code: getMovimientos().stream().filter(movimiento -> movimiento.isDeposito() (la idea de filtrar segun el tipo de movimiento se repite bastante)
 //Large Class: class Cuenta (se podrian abstraer las responsabilidades del manejo de los movimientos a una clase "registroMovimientos")
 //Type Test: "isDeposito" (estamos preguntandole el tipo al movimiento cuando podrian ser objetos polimorficos)
@@ -24,9 +24,7 @@ public class Cuenta {
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
-  public Cuenta() {
-    saldo = 0;
-  }
+  public Cuenta() {}
 
   public Cuenta(double montoInicial) {
     saldo = montoInicial;
