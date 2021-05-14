@@ -7,7 +7,7 @@ import dds.monedero.exceptions.SaldoMenorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MonederoTest {
   private Cuenta cuenta;
@@ -19,7 +19,9 @@ public class MonederoTest {
 
   @Test
   void Poner() {
+
     cuenta.poner(1500);
+    assertEquals(cuenta.getSaldo(), 1500);
   }
 
   @Test
@@ -32,6 +34,8 @@ public class MonederoTest {
     cuenta.poner(1500);
     cuenta.poner(456);
     cuenta.poner(1900);
+
+    assertEquals(cuenta.getSaldo(), 3856);
   }
 
   @Test
@@ -47,16 +51,25 @@ public class MonederoTest {
   @Test
   void ExtraerMasQueElSaldo() {
     assertThrows(SaldoMenorException.class, () -> {
-          cuenta.setSaldo(90);
-          cuenta.sacar(1001);
+          cuenta.poner(90);
+          cuenta.sacar(100);
     });
   }
 
   @Test
-  public void ExtraerMasDe1000() {
+  public void ExtraerMasDe1000EnUnMovimiento() {
     assertThrows(MaximoExtraccionDiarioException.class, () -> {
-      cuenta.setSaldo(5000);
+      cuenta.poner(5000);
       cuenta.sacar(1001);
+    });
+  }
+
+  @Test
+  public void ExtraerMasDe1000EnVariosMovimientosDeUnMismoDia() {
+    assertThrows(MaximoExtraccionDiarioException.class, () -> {
+      cuenta.poner(5000);
+      cuenta.sacar(500);
+      cuenta.sacar(600);
     });
   }
 
@@ -65,4 +78,10 @@ public class MonederoTest {
     assertThrows(MontoNegativoException.class, () -> cuenta.sacar(-500));
   }
 
+  @Test
+  public void LosMovimientosSeRegistranCorrectamente() {
+    cuenta.poner(90);
+    cuenta.sacar(20);
+    assertEquals(2, cuenta.getMovimientos().size());
+  }
 }

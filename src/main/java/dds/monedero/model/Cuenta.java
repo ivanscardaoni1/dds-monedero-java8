@@ -9,6 +9,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//CODE SMELLS
+//Duplicated Code: "saldo = 0" (duplicado en la declaracion y el constructor)
+//Duplicated Code: getMovimientos().stream().filter(movimiento -> movimiento.isDeposito() (la idea de filtrar segun el tipo de movimiento se repite bastante)
+//Large Class: class Cuenta (se podrian abstraer las responsabilidades del manejo de los movimientos a una clase "registroMovimientos")
+//Type Test: "isDeposito" (estamos preguntandole el tipo al movimiento cuando podrian ser objetos polimorficos)
+//Divergent Change: modificar el saldo (1 atributo, 2 metodos) agregar movimientos (1 atributo 2 metodos)
+//setSaldo innecesario: poder setear el saldo puede traer conflictos ya que solo se deberia modificar por extracciones o depositos
+//Duplicated Code: excepciones.
+
+
 public class Cuenta {
 
   private double saldo = 0;
@@ -45,6 +55,7 @@ public class Cuenta {
     if (getSaldo() - cuanto < 0) {
       throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
     }
+
     double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     double limite = 1000 - montoExtraidoHoy;
     if (cuanto > limite) {
@@ -53,6 +64,7 @@ public class Cuenta {
     }
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
+
 
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
